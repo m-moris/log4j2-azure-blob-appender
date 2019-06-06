@@ -96,7 +96,7 @@ In general mode.
 </Configuration>
 ```
 
-## テスト
+## Test
 
 Set your account and key to `test/resources/azureconfig.json` 
 
