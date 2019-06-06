@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Appenders>
+        <AzureBlobAppender name="azureblob" webapps="true">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+        </AzureBlobAppender>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="azureblob" />
+        </Root>
+    </Loggers>
+</Configuration>
