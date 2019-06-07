@@ -113,7 +113,7 @@ public class AzureBlobAppender extends AbstractAppender {
             String sas;
             if ((sas = getProperty(SASURL)) == null) return null;
             if ((prefix1 = getProperty(WEBSITE_NAME)) == null) return null;
-            if ((prefix2 = getProperty(WEBSITE_NAME)) == null) return null;
+            if ((prefix2 = getProperty(WEBSITE_ID)) == null) return null;
 
             try {
                 return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, sas, prefix1, prefix2);
@@ -122,11 +122,11 @@ public class AzureBlobAppender extends AbstractAppender {
                 return null;
             }
         } else {
-            if(isNullOrEmpty(accountName, "accountName")) return null;
-            if(isNullOrEmpty(accountKey, "accountKey")) return null;
-            if(isNullOrEmpty(containerName, "containerName")) return null;
-            if(isNullOrEmpty(prefix1, "prefix1")) return null;
-            if(isNullOrEmpty(prefix2, "prefix2")) return null;
+            if (isNullOrEmpty(accountName, "accountName")) return null;
+            if (isNullOrEmpty(accountKey, "accountKey")) return null;
+            if (isNullOrEmpty(containerName, "containerName")) return null;
+            if (isNullOrEmpty(prefix1, "prefix1")) return null;
+            if (isNullOrEmpty(prefix2, "prefix2")) return null;
             try {
                 return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, accountName, accountKey, containerName, prefix1, prefix2);
             } catch (StorageException | URISyntaxException e) {

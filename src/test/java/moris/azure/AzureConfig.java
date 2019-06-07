@@ -1,6 +1,7 @@
 package moris.azure;
 
 public class AzureConfig {
+
     public AzureConfig() {
     }
 
@@ -12,7 +13,13 @@ public class AzureConfig {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(sasUrl);
+        b.append(sasUrl)
+          .append("\n")
+          .append(accountName)
+          .append("\n")
+          .append(accountKey)
+          .append("\n")
+          .append(containerName);
         return b.toString();
     }
 }
