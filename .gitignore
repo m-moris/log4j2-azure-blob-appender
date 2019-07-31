@@ -1,5 +1,8 @@
 src/test/resources/azureconfig.json
 
+# vscode
+.vscode/
+
 # maven
 target/
 pom.xml.tag
