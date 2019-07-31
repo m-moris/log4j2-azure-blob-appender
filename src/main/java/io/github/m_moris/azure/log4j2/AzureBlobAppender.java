@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,7 +27,11 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudAppendBlob;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
-@Plugin(name = "AzureBlobAppender", category = "Core", elementType = "appender", printObject = true)
+/**
+ * Appends log events to Azure Storage Blob.
+ * 
+ */
+@Plugin(name = "AzureBlobAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class AzureBlobAppender extends AbstractAppender {
 
     private static String SASURL = "DIAGNOSTICS_AZUREBLOBCONTAINERSASURL";
@@ -93,6 +99,21 @@ public class AzureBlobAppender extends AbstractAppender {
         }
     }
 
+    
+    /**
+     * Create AzureBlobAppender.
+     * 
+     * @param name The name of the Appender.
+     * @param webapps WebApps mode. If this value is true, assume it is running on WebApps.
+     * @param accountName Azure storage account name. It becomes effective when WebApps is false.
+     * @param accountKey Azure storage account key. It becomes effective when WebApps is false.
+     * @param containerName The name of blob container name.
+     * @param prefix1 Specify directory structure. It becomes effective when WebApps is false.
+     * @param prefix2 Specify directory structure. It becomes effective when WebApps is false.
+     * @param layout The layout to format the message.
+     * @param filter The filter to filter the message.
+     * @return AzureBlobAppender instance.
+     */
     @PluginFactory
     public static AzureBlobAppender createAppender(
             @PluginAttribute("name") String name,
