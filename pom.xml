@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.m-moris</groupId>
     <artifactId>log4j2-azure-blob-appender</artifactId>
@@ -12,12 +13,19 @@
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <id>m-moris</id>
+            <name>Masahito MORISHIMA</name>
+            <url>https://github.com/m-moris/</url>
+        </developer>
+    </developers>
     <scm>
         <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
         <connection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</connection>
         <developerConnection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
