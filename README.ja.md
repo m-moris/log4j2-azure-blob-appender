@@ -1,5 +1,8 @@
 # Azure Blob Appender 
 
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.m-moris/log4j2-azure-blob-appender)](https://search.maven.org/search?q=a:log4j2-azure-blob-appender)
+
 Azure Storage Blob にログを出力する log4j2用のカスタムアペンダーです。ストレージアカウントやキーをなどを直接指定する方法と、Azure App Service  (WebApps) のアプリケーション診断ログを利用する方法があります。
 
 ## WebAppsモード

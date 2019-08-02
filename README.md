@@ -1,5 +1,8 @@
 # Azure Blob Appender
 
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.m-moris/log4j2-azure-blob-appender)](https://search.maven.org/search?q=a:log4j2-azure-blob-appender)
+
 This is a custom appender for log4j2 that outputs logs to Azure Storage Blob. There are two methods, one is to specify storage account and key directly, and the other is to use application diagnostic log of Azure App Service (WebApps).
 
 ## WebApps mode
