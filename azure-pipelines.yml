@@ -23,4 +23,4 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-    options: '-Dazure-pipelines=true -DDIAGNOSTICS_AZUREBLOBCONTAINERSASURL=$(sasUrl) -DaccountName=$(accountName) -DaccountKey=$(accountKey) -DcontainerName=$(DcontainerName)'
+    options: '-Dazure-pipelines=true -DDIAGNOSTICS_AZUREBLOBCONTAINERSASURL=$(sasUrl) -DaccountName=$(accountName) -DaccountKey=$(accountKey) -DcontainerName=$(containerName)'

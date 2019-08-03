@@ -23,7 +23,7 @@ public class AzureBlobAppenderWebAppsTest {
 
     public void prepare() throws JsonParseException, JsonMappingException, IOException {
 
-        if (StringUtils.isNotEmpty(System.getProperty("azure-piplines"))) {
+        if (StringUtils.isNotEmpty(System.getProperty("azure-pipelines"))) {
             System.out.println("Use properties.");
         } else {
 
