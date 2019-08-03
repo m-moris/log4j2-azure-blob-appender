@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +21,18 @@ public class AzureBlobAppenderGeneralTest {
 
     @BeforeEach
     public void prepare() throws JsonParseException, JsonMappingException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("azureconfig.json")) {
-            _azureConfig = mapper.readValue(is, AzureConfig.class);
-            System.setProperty("accountName", _azureConfig.accountName);
-            System.setProperty("accountKey", _azureConfig.accountKey);
-            System.setProperty("containerName", _azureConfig.containerName);
+
+        if (StringUtils.isNotEmpty(System.getProperty("azure-pipelines"))) {
+            System.out.println("Use properties.");
+        } else {
+            System.out.println("Use config fie.");
+            ObjectMapper mapper = new ObjectMapper();
+            try (InputStream is = ClassLoader.getSystemResourceAsStream("azureconfig.json")) {
+                _azureConfig = mapper.readValue(is, AzureConfig.class);
+                System.setProperty("accountName", _azureConfig.accountName);
+                System.setProperty("accountKey", _azureConfig.accountKey);
+                System.setProperty("containerName", _azureConfig.containerName);
+            }
         }
     }
 
