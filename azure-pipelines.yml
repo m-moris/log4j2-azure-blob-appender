@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+- group: log4j2-azure-blob-appender-vars
+
 steps:
 - task: Maven@3
   inputs:
@@ -20,3 +23,4 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+    options: '-Dazure-pipelines=true -DDIAGNOSTICS_AZUREBLOBCONTAINERSASURL=$(sasUrl) -DaccountName=$(accountName) -DaccountKey=$(accountKey) -DcontainerName=$(DcontainerName)'
