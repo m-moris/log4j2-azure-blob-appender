@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.m-moris</groupId>
     <artifactId>log4j2-azure-blob-appender</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3</version>
     <name>log4j2-azure-blob-appender </name>
     <description>Log4j2 appender for Azure append Blobs.</description>
     <licenses>
