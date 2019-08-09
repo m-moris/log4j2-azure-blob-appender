@@ -59,3 +59,15 @@ stages:
       - script: |
           ls -al $(Build.SourcesDirectory)
           ls -al $(Build.ArtifactStagingDirectory)
+    - job: deploy-snapshot
+      dependsOn: package
+      condition: ne(variables['isGitHubTag'], 'true')
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps:
+      - checkout: none
+      - script: |
+          ls -al $(Build.SourcesDirectory)      
+
+
+
