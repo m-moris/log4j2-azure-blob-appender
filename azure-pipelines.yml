@@ -44,7 +44,7 @@ stages:
           mkdir -p ~/.m2
           cp -v $(settingsXml.secureFilePath) ~/.m2/
           cp -v $(settingsXml.secureFilePath) ~/.m2/
-          cp -v $(azureconfig.secureFilePAth) $(Build.SourcesDirectory)/test/resources/
+          cp -v $(azureconfig.secureFilePAth) $(Build.SourcesDirectory)/src/test/resources/
       - task: Maven@3
         inputs:
           mavenPomFile: 'pom.xml'
