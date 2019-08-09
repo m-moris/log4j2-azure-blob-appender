@@ -55,11 +55,11 @@ stages:
           publishJUnitResults: true
           testResultsFiles: '**/surefire-reports/TEST-*.xml'
           goals: 'clean package verify'
-          options: '-DperformRelease=true '
+          options: '-DperformRelease=true'
       - script: |
           ls -al $(Build.SourcesDirectory)
           ls -al $(Build.ArtifactStagingDirectory)
-    - job: deploy-snapshot
+    - job: deploy_snapshot
       dependsOn: package
       condition: ne(variables['isGitHubTag'], 'true')
       pool:
@@ -67,7 +67,7 @@ stages:
       steps:
       - checkout: none
       - script: |
-          ls -al $(Build.SourcesDirectory)      
+          ls -al $(Build.SourcesDirectory)
 
 
 
