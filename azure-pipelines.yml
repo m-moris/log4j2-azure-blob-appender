@@ -23,22 +23,22 @@ stages:
         name: settingsSecurityXml
         displayName: 'Download maven security settings file'
         inputs:
-        secureFile: 'settings-security.xml'
+          secureFile: 'settings-security.xml'
       - task: DownloadSecureFile@1
         name: settingsXml
         displayName: 'Download maven settings file'
         inputs:
-        secureFile: 'settings.xml'
+          secureFile: 'settings.xml'
       - task: DownloadSecureFile@1
         name: key
         displayName: 'Download private key file'
         inputs:
-        secureFile: 'moris.private.asc'
+          secureFile: 'moris.private.asc'
       - task: DownloadSecureFile@1
         name: azureconfig
         displayName: 'Download azureconfig file'
         inputs:
-        secureFile: 'azureconfig.json'
+          secureFile: 'azureconfig.json'
       - script: |
           gpg --import $(key.secureFilePath)
           mkdir -p ~/.m2
@@ -47,15 +47,15 @@ stages:
           cp -v $(azureconfig.secureFilePAth) $(Build.SourcesDirectory)/test/resources/
       - task: Maven@3
         inputs:
-        mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean package verify'
-        options: '-DperformRelease=true '
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.8'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          goals: 'clean package verify'
+          options: '-DperformRelease=true '
       - script: |
           ls -al $(Build.SourcesDirectory)
           ls -al $(Build.ArtifactStagingDirectory)
