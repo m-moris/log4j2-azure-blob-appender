@@ -1,9 +1,12 @@
+.azure-pipelines-resources/
+
 src/test/resources/azureconfig.json
 
 # vscode
 .vscode/
 
 # maven
+.flattened-pom.xml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
