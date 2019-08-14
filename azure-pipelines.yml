@@ -14,7 +14,7 @@ stages:
   - stage: Build
     jobs: 
     - job: package
-      condition: ne(variables['isGitHubTag'], 'true')
+      condition: ne(variables['isGitHubTag'], 'True')
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
@@ -40,7 +40,7 @@ stages:
   - stage: Publish
     dependsOn:
     - Build
-    condition: and(succeeded(), eq(variables['isGitHubTag'], 'true'))
+    condition: and(succeeded(), eq(variables['isGitHubTag'], 'True'))
     jobs:
     - job: deploy
       condition: ne(variables['isGitHubTag'], 'true')
