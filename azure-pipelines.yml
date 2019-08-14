@@ -19,32 +19,7 @@ stages:
         vmImage: 'ubuntu-16.04'
       steps:
       - checkout: self
-      - task: DownloadSecureFile@1
-        name: settingsSecurityXml
-        displayName: 'Download maven security settings file'
-        inputs:
-          secureFile: 'settings-security.xml'
-      - task: DownloadSecureFile@1
-        name: settingsXml
-        displayName: 'Download maven settings file'
-        inputs:
-          secureFile: 'settings.xml'
-      - task: DownloadSecureFile@1
-        name: key
-        displayName: 'Download private key file'
-        inputs:
-          secureFile: 'moris.private.asc'
-      - task: DownloadSecureFile@1
-        name: azureconfig
-        displayName: 'Download azureconfig file'
-        inputs:
-          secureFile: 'azureconfig.json'
-      - script: |
-          gpg --import $(key.secureFilePath)
-          mkdir -p ~/.m2
-          cp -v $(settingsSecurityXml.secureFilePath) ~/.m2/
-          cp -v $(settingsXml.secureFilePath) ~/.m2/
-          cp -v $(azureconfig.secureFilePAth) $(Build.SourcesDirectory)/src/test/resources/
+      -template: templates/prepare-maven.yml
       - task: Maven@3
         inputs:
           mavenPomFile: 'pom.xml'
