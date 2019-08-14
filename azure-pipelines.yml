@@ -19,7 +19,7 @@ stages:
         vmImage: 'ubuntu-16.04'
       steps:
       - checkout: self
-      -template: templates/prepare-maven.yml
+      - template: templates/prepare-maven.yml
       - task: Maven@3
         inputs:
           mavenPomFile: 'pom.xml'
