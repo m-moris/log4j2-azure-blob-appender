@@ -42,7 +42,7 @@ stages:
     - Build
     condition: and(succeeded(), eq(variables['isGitHubTag'], 'true'))
     jobs:
-    - job: package
+    - job: deploy
       condition: ne(variables['isGitHubTag'], 'true')
       pool:
         vmImage: 'ubuntu-16.04'
@@ -61,6 +61,6 @@ stages:
           jdkArchitectureOption: 'x64'
           publishJUnitResults: true
           testResultsFiles: '**/surefire-reports/TEST-*.xml'
-          goals: 'clean package veriry' 
+          goals: 'clean deploy' 
           options: '--no-transfer-progress -DperformRelease=true -DskipTests=true Dchangelist= '
 
