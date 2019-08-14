@@ -61,5 +61,5 @@ stages:
           publishJUnitResults: true
           testResultsFiles: '**/surefire-reports/TEST-*.xml'
           goals: 'clean deploy' 
-          options: '--no-transfer-progress -DperformRelease=true -DskipTests=true Dchangelist= '
+          options: '--no-transfer-progress -DperformRelease=true -DskipTests=true -Dchangelist= '
 
