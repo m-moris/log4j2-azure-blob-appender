@@ -80,8 +80,7 @@ public class AzureBlobAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
 
-        String dfmt = (new SimpleDateFormat("yyyy/MM/dd/HH")).format(new Date());
-        String name = String.format("%s/%s/%s_applicationLog.txt", _prefix1, dfmt, _prefix2);
+        String name = getBlobname();
 
         try {
             CloudAppendBlob blob = _container.getAppendBlobReference(name);
@@ -99,7 +98,15 @@ public class AzureBlobAppender extends AbstractAppender {
         }
     }
 
-    
+    private String getBlobname() {
+        String dfmt = (new SimpleDateFormat("yyyy/MM/dd/HH")).format(new Date());
+        if (isNullOrEmpty(_prefix2)) {
+            return String.format("%s/%s_applicationLog.txt", dfmt, _prefix1);
+        } else {
+            return String.format("%s/%s/%s_applicationLog.txt", _prefix1, dfmt, _prefix2);
+        }
+    }
+
     /**
      * Create AzureBlobAppender.
      * 
@@ -147,7 +154,6 @@ public class AzureBlobAppender extends AbstractAppender {
             if (isNullOrEmpty(accountKey, "accountKey")) return null;
             if (isNullOrEmpty(containerName, "containerName")) return null;
             if (isNullOrEmpty(prefix1, "prefix1")) return null;
-            if (isNullOrEmpty(prefix2, "prefix2")) return null;
             try {
                 return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, accountName, accountKey, containerName, prefix1, prefix2);
             } catch (StorageException | URISyntaxException e) {
