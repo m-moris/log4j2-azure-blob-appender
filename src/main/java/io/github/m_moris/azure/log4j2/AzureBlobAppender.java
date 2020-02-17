@@ -116,7 +116,7 @@ public class AzureBlobAppender extends AbstractAppender {
      * @param accountKey Azure storage account key. It becomes effective when WebApps is false.
      * @param containerName The name of blob container name.
      * @param prefix1 Specify directory structure. It becomes effective when WebApps is false.
-     * @param prefix2 Specify directory structure. It becomes effective when WebApps is false.
+     * @param prefix2 Specify directory structure. It becomes effective when WebApps is false. Can be null, empty or unset.
      * @param layout The layout to format the message.
      * @param filter The filter to filter the message.
      * @return AzureBlobAppender instance.
@@ -138,27 +138,24 @@ public class AzureBlobAppender extends AbstractAppender {
         }
 
         if (webapps) {
-            String sas;
-            if ((sas = getProperty(SASURL)) == null) return null;
-            if ((prefix1 = getProperty(WEBSITE_NAME)) == null) return null;
-            if ((prefix2 = getProperty(WEBSITE_ID)) == null) return null;
+            String sas = getPropertyOrFail(SASURL);
+            prefix1 = getPropertyOrFail(WEBSITE_NAME);
+            prefix2 = getPropertyOrFail(WEBSITE_ID);
 
             try {
                 return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, sas, prefix1, prefix2);
             } catch (StorageException e) {
-                LOGGER.error(sas + " is invalid.", e);
-                return null;
+                throw new RuntimeException(sas + " is invalid.", e);
             }
         } else {
-            if (isNullOrEmpty(accountName, "accountName")) return null;
-            if (isNullOrEmpty(accountKey, "accountKey")) return null;
-            if (isNullOrEmpty(containerName, "containerName")) return null;
-            if (isNullOrEmpty(prefix1, "prefix1")) return null;
+            failIfNullOrEmpty(accountName, "accountName");
+            failIfNullOrEmpty(accountKey, "accountKey");
+            failIfNullOrEmpty(containerName, "containerName");
+            failIfNullOrEmpty(prefix1, "prefix1");
             try {
                 return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, accountName, accountKey, containerName, prefix1, prefix2);
             } catch (StorageException | URISyntaxException e) {
-                LOGGER.error("storage account is invalid.", e);
-                return null;
+                throw new RuntimeException("storage account is invalid.", e);
             }
         }
     }
@@ -169,10 +166,13 @@ public class AzureBlobAppender extends AbstractAppender {
             return value;
         }
         value = System.getProperty(key);
+        return value;
+    }
 
-        if (isNullOrEmpty(value)) {
-            LOGGER.error(key + " does not set.");
-        }
+    private static String getPropertyOrFail(String key) {
+        String value = getProperty(key);
+
+        failIfNullOrEmpty(value, key);
         return value;
     }
 
@@ -180,11 +180,10 @@ public class AzureBlobAppender extends AbstractAppender {
         return value == null || value.trim().isEmpty();
     }
 
-    private static boolean isNullOrEmpty(String value, String key) {
+    private static void failIfNullOrEmpty(String value, String key) {
         boolean result = value == null || value.trim().isEmpty();
         if(result) {
-            LOGGER.error(key + "does not set.");
+            throw new RuntimeException("Mandatory parameter missing: "+key);
         }
-        return result;
     }
 }
