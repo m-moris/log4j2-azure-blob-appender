@@ -24,11 +24,11 @@
         <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
         <connection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</connection>
         <developerConnection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</developerConnection>
-        <tag>v1.0.4</tag>
+        <tag>v1.1.0</tag>
     </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
-        <revision>1.0.4</revision>
+        <revision>1.1.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
