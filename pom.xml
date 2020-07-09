@@ -24,11 +24,11 @@
         <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
         <connection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</connection>
         <developerConnection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</developerConnection>
-        <tag>v1.1.1</tag>
+        <tag>v1.1.2</tag>
     </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
-        <revision>1.1.1</revision>
+        <revision>1.1.2</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.4</version>
+            <version>2.9.10.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -152,7 +152,8 @@
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>3.0.0</version>
             </plugin>
-            <!--             <plugin>
+            <!-- 
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.8</version>
