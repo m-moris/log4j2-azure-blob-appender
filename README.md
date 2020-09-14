@@ -86,6 +86,7 @@ In general mode.
         <AzureBlobAppender name="azureblob" 
                            accountName="<<yourstorageaccount>>>"
                            accountKey="<<yourstorageaccountkey>>"
+                           containerName="<<yourblobstoragecontainername>>"
                            prefix1="${env:COMPUTERNAME}"
                            prefix2="someprefix">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
