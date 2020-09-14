@@ -53,7 +53,8 @@ The following is the general mode.
 |-----|-----|-----|
 |webapps| boolean | If `true`, the following settings are ignored in WebApps mode. Default is `false`|
 |accountName|string|Storage account name. if webapps is `false`, it is effective.
-|accountKey|string|Storage account key|
+|accountKey|string|Storage account key. if webapps is `false`, it is effective.|
+|containerName|string|The name of blob container name. if webapps is `false`, it is effective.|
 |prefix1| string | Prefix1|
 |prefix2|string|Prefix2|
 
