@@ -114,7 +114,7 @@ public class AzureBlobAppender extends AbstractAppender {
      * @param webapps WebApps mode. If this value is true, assume it is running on WebApps.
      * @param accountName Azure storage account name. It becomes effective when WebApps is false.
      * @param accountKey Azure storage account key. It becomes effective when WebApps is false.
-     * @param containerName The name of blob container name. It becomes effective when WebApps is false.
+     * @param containerName The name of blob container. It becomes effective when WebApps is false.
      * @param prefix1 Specify directory structure. It becomes effective when WebApps is false.
      * @param prefix2 Specify directory structure. It becomes effective when WebApps is false. Can be null, empty or unset.
      * @param layout The layout to format the message.
