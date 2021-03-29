@@ -53,7 +53,8 @@ The following is the general mode.
 |-----|-----|-----|
 |webapps| boolean | If `true`, the following settings are ignored in WebApps mode. Default is `false`|
 |accountName|string|Storage account name. if webapps is `false`, it is effective.
-|accountKey|string|Storage account key|
+|accountKey|string|Storage account key. if webapps is `false`, it is effective.|
+|containerName|string|The name of blob container. if webapps is `false`, it is effective.|
 |prefix1| string | Prefix1|
 |prefix2|string|Prefix2|
 
@@ -86,6 +87,7 @@ In general mode.
         <AzureBlobAppender name="azureblob" 
                            accountName="<<yourstorageaccount>>>"
                            accountKey="<<yourstorageaccountkey>>"
+                           containerName="<<yourblobstoragecontainername>>"
                            prefix1="${env:COMPUTERNAME}"
                            prefix2="someprefix">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
