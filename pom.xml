@@ -28,7 +28,7 @@
     </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
-        <revision>1.1.2</revision>
+        <revision>1.1.3</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
