@@ -20,6 +20,7 @@ steps:
   inputs:
     secureFile: 'azureconfig.json'
 - script: |
+    export GPG_TTY=$(tty)
     gpg --no-tty --import $(key.secureFilePath)
     mkdir -p ~/.m2
     cp -v $(settingsSecurityXml.secureFilePath) ~/.m2/
