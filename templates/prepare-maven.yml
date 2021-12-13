@@ -20,7 +20,7 @@ steps:
   inputs:
     secureFile: 'azureconfig.json'
 - script: |
-    gpg --import $(key.secureFilePath)
+    gpg --no-tty --import $(key.secureFilePath)
     mkdir -p ~/.m2
     cp -v $(settingsSecurityXml.secureFilePath) ~/.m2/
     cp -v $(settingsXml.secureFilePath) ~/.m2/
