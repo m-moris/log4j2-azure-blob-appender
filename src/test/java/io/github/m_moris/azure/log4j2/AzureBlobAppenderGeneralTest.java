@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,13 @@ public class AzureBlobAppenderGeneralTest {
 
     @Test
     public void test() {
-        Logger logger = Configurator.initialize("test", "config-gen.xml").getLogger(AzureBlobAppenderGeneralTest.class.getName());
-        logger.debug("debug message");
-        logger.info("info message");
-        logger.warn("warn message");
-        logger.error("error message", new IOException("test"));
-        assertTrue(true);
+        try (LoggerContext context = Configurator.initialize("test", "config-gen.xml")) {
+            Logger logger = context.getLogger(AzureBlobAppenderGeneralTest.class.getName());
+            logger.debug("debug message");
+            logger.info("info message");
+            logger.warn("warn message");
+            logger.error("error message", new IOException("test"));
+            assertTrue(true);
+        }
     }
 }

@@ -9,6 +9,8 @@ trigger:
 
 variables:
   isGitHubTag: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
+  COMPUTERNAME : azuredevops
+  USERNAME : azuredevopsuser
 
 stages:
   - stage: Build
