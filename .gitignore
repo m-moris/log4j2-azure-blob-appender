@@ -1,5 +1,5 @@
 .azure-pipelines-resources/
-
+.idea/
 src/test/resources/azureconfig.json
 
 # vscode
