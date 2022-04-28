@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.m-moris</groupId>
     <artifactId>log4j2-azure-blob-appender</artifactId>
-    <name>log4j2-azure-blob-appender </name>
+    <name>log4j2-azure-blob-appender</name>
     <version>${revision}${sha1}${changelist}</version>
     <description>Log4j2 appender for Azure append Blobs.</description>
     <licenses>
@@ -23,13 +24,13 @@
         <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
         <connection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</connection>
         <developerConnection>scm:git:https://github.com/m-moris/log4j2-azure-blob-appender.git</developerConnection>
-        <tag>v1.1.7</tag>
+        <tag>2.0.0</tag>
     </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
-        <revision>1.1.7</revision>
+        <revision>2.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
-        <sha1 />
+        <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -50,17 +51,23 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.17.1</version>
+            <version>2.17.2</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-storage</artifactId>
-            <version>8.6.3</version>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-blob</artifactId>
+            <version>12.16.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -72,7 +79,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.8</version>
+            <version>2.13.2.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
