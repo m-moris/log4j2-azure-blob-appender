@@ -5,6 +5,13 @@
 
 This is a custom appender for log4j2 that outputs logs to Azure Storage Blob. There are two methods, one is to specify storage account and key directly, and the other is to use application diagnostic log of Azure App Service (WebApps).
 
+## What's New
+
+**Important 2022/4/28**
+
+The version of Azure SDK Blob used internally has been updated from V8 to V12. However, there is no change in the interface.
+Along with that, the tool version has been changed to V2. 
+
 ## WebApps mode
 
 App Service has an app diagnostic logging feature, which is valid only for .NET applications and not available from Java, but it can be solved. However, it is only when the execution environment is Windows.
