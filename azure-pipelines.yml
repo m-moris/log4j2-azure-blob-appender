@@ -32,7 +32,7 @@ stages:
           publishJUnitResults: true
           testResultsFiles: '**/surefire-reports/TEST-*.xml'
           goals: 'clean package verify'
-          options: '--no-transfer-progress -DperformRelease=true'
+          options: '--no-transfer-progress -DperformRelease=true -Dazure-pipelines=true'
       - script: |
           echo $(Build.SourcesDirectory)
           ls -al $(Build.SourcesDirectory)

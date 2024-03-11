@@ -25,6 +25,7 @@ public class AzureBlobAppenderWebAppsTest {
 
         if (StringUtils.isNotEmpty(System.getProperty("azure-pipelines"))) {
             System.out.println("Use properties.");
+            System.setProperty("DIAGNOSTICS_AZUREBLOBCONTAINERSASURL", System.getenv("sasUrl"));
         } else {
 
             System.out.println("Use config file.");
