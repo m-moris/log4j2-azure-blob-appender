@@ -1,67 +1,69 @@
-
 trigger:
   branches:
     include:
-    - master
+      - master
   tags:
     include:
-    - v*
+      - v*
 
 variables:
-  isGitHubTag: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
-  COMPUTERNAME : azuredevops
-  USERNAME : azuredevopsuser
+  - group: log4j2-azure-blob-appender-vars
+  - name: isGitHubTag
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
+  - name: COMPUTERNAME
+    value: azuredevops
+  - name: USERNAME
+    value: azuredevopsuser
 
 stages:
   - stage: Build
-    jobs: 
-    - job: package
-      condition: ne(variables['isGitHubTag'], 'true')
-      pool:
-        vmImage: 'ubuntu-latest'
-      steps:
-      - checkout: self
-      - template: templates/prepare-maven.yml
-      - task: Maven@3
-        inputs:
-          mavenPomFile: 'pom.xml'
-          mavenOptions: '-Xmx3072m'
-          javaHomeOption: 'JDKVersion'
-          jdkVersionOption: '1.11'
-          jdkArchitectureOption: 'x64'
-          publishJUnitResults: true
-          testResultsFiles: '**/surefire-reports/TEST-*.xml'
-          goals: 'clean package verify'
-          options: '--no-transfer-progress -DperformRelease=true -Dazure-pipelines=true'
-      - script: |
-          echo $(Build.SourcesDirectory)
-          ls -al $(Build.SourcesDirectory)
-          ls -al $(Build.SourcesDirectory)/target
-          ehco $(Build.ArtifactStagingDirectory)
-          ls -al $(Build.ArtifactStagingDirectory)
+    jobs:
+      - job: package
+        condition: ne(variables['isGitHubTag'], 'true')
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+          - template: templates/prepare-maven.yml
+          - task: Maven@3
+            inputs:
+              mavenPomFile: "pom.xml"
+              mavenOptions: "-Xmx3072m"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "1.11"
+              jdkArchitectureOption: "x64"
+              publishJUnitResults: true
+              testResultsFiles: "**/surefire-reports/TEST-*.xml"
+              goals: "clean package verify"
+              options: "--no-transfer-progress -DperformRelease=true -Dazure-pipelines=true"
+          - script: |
+              echo $(Build.SourcesDirectory)
+              ls -al $(Build.SourcesDirectory)
+              ls -al $(Build.SourcesDirectory)/target
+              ehco $(Build.ArtifactStagingDirectory)
+              ls -al $(Build.ArtifactStagingDirectory)
   - stage: Publish
     dependsOn:
-    - Build
+      - Build
     condition: and(succeeded(), eq(variables['isGitHubTag'], 'true'))
     jobs:
-    - job: deploy
-      pool:
-        vmImage: 'ubuntu-latest'
-      steps:
-      - checkout: self
-      - script: |
-          VERSION_TAG=`git describe --tags` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
-          echo $(VERSION_TAG)
-      - template: templates/prepare-maven.yml
-      - task: Maven@3
-        inputs:
-          mavenPomFile: 'pom.xml'
-          mavenOptions: '-Xmx3072m'
-          javaHomeOption: 'JDKVersion'
-          jdkVersionOption: '1.8'
-          jdkArchitectureOption: 'x64'
-          publishJUnitResults: true
-          testResultsFiles: '**/surefire-reports/TEST-*.xml'
-          goals: 'clean deploy' 
-          options: '--no-transfer-progress -DperformRelease=true -DskipTests=true -Dchangelist= '
-
+      - job: deploy
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+          - script: |
+              VERSION_TAG=`git describe --tags` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+              echo $(VERSION_TAG)
+          - template: templates/prepare-maven.yml
+          - task: Maven@3
+            inputs:
+              mavenPomFile: "pom.xml"
+              mavenOptions: "-Xmx3072m"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "1.8"
+              jdkArchitectureOption: "x64"
+              publishJUnitResults: true
+              testResultsFiles: "**/surefire-reports/TEST-*.xml"
+              goals: "clean deploy"
+              options: "--no-transfer-progress -DperformRelease=true -DskipTests=true -Dchangelist= "
