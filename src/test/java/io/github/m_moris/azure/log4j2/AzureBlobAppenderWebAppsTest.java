@@ -25,6 +25,7 @@ public class AzureBlobAppenderWebAppsTest {
 
         if (StringUtils.isNotEmpty(System.getProperty("azure-pipelines"))) {
             System.out.println("Use properties.");
+            System.setProperty("DIAGNOSTICS_AZUREBLOBCONTAINERSASURL", System.getProperty("sasUrl"));
         } else {
 
             System.out.println("Use config file.");
@@ -47,5 +48,6 @@ public class AzureBlobAppenderWebAppsTest {
         logger.warn("warn message");
         logger.error("error message", new IOException("test"));
         assertTrue(true);
+        System.out.println("done");
     }
 }

@@ -7,6 +7,11 @@ This is a custom appender for log4j2 that outputs logs to Azure Storage Blob. Th
 
 ## What's New
 
+**Updated 2024/3/11**
+
+- Update dependent libraries
+- JDK version has been changed from 8 to 11
+
 **Important 2022/4/28**
 
 The version of Azure SDK Blob used internally has been updated from V8 to V12. However, there is no change in the interface.
