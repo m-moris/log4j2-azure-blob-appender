@@ -25,9 +25,6 @@ public class AzureBlobAppenderGeneralTest {
 
         if (StringUtils.isNotEmpty(System.getProperty("azure-pipelines"))) {
             System.out.println("Use properties.");
-            System.setProperty("accountName", System.getenv("accountName"));
-            System.setProperty("accountKey", System.getenv("accountKey"));
-            System.setProperty("containerName", System.getenv("containerName"));
         } else {
             System.out.println("Use config fie.");
             ObjectMapper mapper = new ObjectMapper();
