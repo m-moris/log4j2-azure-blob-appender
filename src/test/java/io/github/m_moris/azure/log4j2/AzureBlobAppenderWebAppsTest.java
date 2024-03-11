@@ -47,5 +47,6 @@ public class AzureBlobAppenderWebAppsTest {
         logger.warn("warn message");
         logger.error("error message", new IOException("test"));
         assertTrue(true);
+        System.out.println("done");
     }
 }
