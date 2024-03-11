@@ -40,7 +40,7 @@ stages:
               echo $(Build.SourcesDirectory)
               ls -al $(Build.SourcesDirectory)
               ls -al $(Build.SourcesDirectory)/target
-              ehco $(Build.ArtifactStagingDirectory)
+              echo $(Build.ArtifactStagingDirectory)
               ls -al $(Build.ArtifactStagingDirectory)
   - stage: Publish
     dependsOn:
