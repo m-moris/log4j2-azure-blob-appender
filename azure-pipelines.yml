@@ -35,7 +35,7 @@ stages:
               publishJUnitResults: true
               testResultsFiles: "**/surefire-reports/TEST-*.xml"
               goals: "clean package verify"
-              options: "--no-transfer-progress -DperformRelease=true -Dazure-pipelines=true -DaccountName=$(accountName) -DaccountKey=$(accountKey) -DcontainerName=$(containerName) -DsasUrl='$(sasUrl)'"
+              options: "--no-transfer-progress -DperformRelease=true -Dazure-pipelines=true -DaccountName=$(accountName) -DaccountKey=$(accountKey) -DcontainerName=$(containerName) -DsasUrl=$(sasUrl)"
           - script: |
               echo $(Build.SourcesDirectory)
               ls -al $(Build.SourcesDirectory)
