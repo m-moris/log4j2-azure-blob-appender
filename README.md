@@ -7,6 +7,10 @@ This is a custom appender for log4j2 that outputs logs to Azure Storage Blob. Th
 
 ## What's New
 
+**Important 2024/03**
+
+Managed ID is now supported. It uses `DefaultAzureCredential` internally.
+
 **Updated 2024/3/11**
 
 - Update dependent libraries
@@ -43,8 +47,14 @@ Directly specify a storage account or key in the configuration file.
 
 The items to be set are as follows. It is necessary to specify Prefix1 / Prefix2 to output in the directory structure described later.
 
+If you use a storage key for authentication, you need the following three values.
 * Storage account
 * Storage account key
+* Container name
+
+If you use managed ID for authentication, you need the following one value.
+* BLOB URI including container name (e.g. `https://{your-storage-account-name}.blob.core.windows.net/logs`)
+
 * Prefix 1
 * Prefix 2
 
@@ -61,15 +71,17 @@ The following is the general mode.
 
 ## Configuraion
 
-|Attribute|Type|Mean|
-|-----|-----|-----|
-|webapps| boolean | If `true`, the following settings are ignored in WebApps mode. Default is `false`|
-|accountName|string|Storage account name. if webapps is `false`, it is effective.
-|accountKey|string|Storage account key. if webapps is `false`, it is effective.|
-|containerName|string|The name of blob container. if webapps is `false`, it is effective.|
-|prefix1| string | Prefix1|
-|prefix2|string|Prefix2|
+| Attribute     | Type    | Mean                                                                              |
+| ------------- | ------- | --------------------------------------------------------------------------------- |
+| webapps       | boolean | If `true`, the following settings are ignored in WebApps mode. Default is `false` |
+| accountName   | string  | Storage account name. if webapps is `false`, it is effective.                     |
+| accountKey    | string  | Storage account key. if webapps is `false`, it is effective.                      |
+| containerName | string  | The name of blob container. if webapps is `false`, it is effective.               |
+| containerUri  | string  | The URI of blob container. if webapps is `false`, it is effective.                |
+| prefix1       | string  | Prefix1                                                                           |
+| prefix2       | string  | Prefix2                                                                           |
 
+`containerUri` takes precedence.
 
 ### Sample configurations
 
@@ -100,6 +112,7 @@ In general mode.
                            accountName="<<yourstorageaccount>>>"
                            accountKey="<<yourstorageaccountkey>>"
                            containerName="<<yourblobstoragecontainername>>"
+                           containerUri="<<yourblobstoragecontaineruri>>"
                            prefix1="${env:COMPUTERNAME}"
                            prefix2="someprefix">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
