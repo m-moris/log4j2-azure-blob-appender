@@ -7,6 +7,15 @@ Azure Storage Blob にログを出力する log4j2用のカスタムアペンダ
 
 ## What's New
 
+**重要 2024/03**
+
+マネージドIDに対応しました。内部的に `DefaultAzureCredential` を利用しています。
+
+**更新 2024/03**
+
+- 依存ライブラリの更新
+- JDKバージョンを8から11に変更しました
+
 **重要 2022/4/28**
 
 ツール内部で利用している Azure SDK BLOBのバージョンを、V8系からV12系にアップデートしました。特にインタフェースに変更はありません。
@@ -39,8 +48,18 @@ Linux ベースの WebAppsには、アプリ診断ログ機能が用意されて
 
 設定すべき項目は以下の通りです。後述するディレクトリ構造で出力するためPrefix1/Prefix2の指定が必要です。
 
+ストレージキーで認証を利用する場合は以下の3つの値が必要です。
+
 * ストレージアカウント
 * ストレージアカウントキー
+* コンテナ名
+
+マネージドIDで認証を利用する場合は以下の1つの値が必要です。
+
+* コンテナ名を含むBLOB URI （例 `https://{your-storage-account-name}.blob.core.windows.net/logs`）
+
+階層を指定するための2つの値が必要です。
+
 * Prefix1 
 * Prefix2
 
@@ -60,13 +79,17 @@ log4j2の構成ファイルでは環境変数を参照できるので、実行�
 
 設定する属性は以下の通り。
 
-|属性|型|意味|
-|-----|-----|-----|
-|webapps| boolean | `true`ならWebAppsモードで、以下の設定は無視される。デフォルトは`false`|
-|accountName|string|ストレージアカウント名。webappsが`false`なら有効|
-|accountKey|string|ストレージアカウントキー。同上|
-|prefix1| string | Prefix1。同上|
-|prefix2|string|Prefix2。同上|
+| 属性          | 型      | 意味                                                                   |
+| ------------- | ------- | ---------------------------------------------------------------------- |
+| webapps       | boolean | `true`ならWebAppsモードで、以下の設定は無視される。デフォルトは`false` |
+| accountName   | string  | ストレージアカウント名。webappsが`false`なら有効                       |
+| accountKey    | string  | ストレージアカウントキー。同上                                         |
+| containerName | string  | BLOBコンテナの名前。同上                                               |
+| containerUri  | string  | BLOBコンテナのURI。同上                                                |
+| prefix1       | string  | Prefix1。同上                                                          |
+| prefix2       | string  | Prefix2。同上                                                          |
+
+containerUriが優先される。
 
 ### 定義のサンプル
 
@@ -97,6 +120,8 @@ WebAppsモード
         <AzureBlobAppender name="azureblob" 
                            accountName="<<yourstorageaccount>>>"
                            accountKey="<<yourstorageaccountkey>>"
+                           containerName="<<yourblobstoragecontainername>>"
+                           containerUri="<<yourblobstoragecontaineruri>>"
                            prefix1="${sys:COMPUTERNAME}"
                            prefix2="foobar">
             <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />

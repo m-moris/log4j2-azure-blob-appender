@@ -1,10 +1,17 @@
 package io.github.m_moris.azure.log4j2;
 
-import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.BlobContainerClientBuilder;
-import com.azure.storage.blob.specialized.AppendBlobClient;
-import com.azure.storage.common.StorageSharedKeyCredential;
-import org.apache.logging.log4j.core.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Property;
@@ -14,13 +21,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobContainerClientBuilder;
+import com.azure.storage.blob.specialized.AppendBlobClient;
+import com.azure.storage.common.StorageSharedKeyCredential;
 
 /**
  * Appends log events to Azure Storage Blob.
@@ -32,49 +38,59 @@ public class AzureBlobAppender extends AbstractAppender {
     private static final String WEBSITE_NAME = "WEBSITE_SITE_NAME";
     private static final String WEBSITE_ID = "WEBSITE_INSTANCE_ID";
 
-    private final BlobContainerClient _container;
+    private BlobContainerClient _container;
     private final String _prefix1;
     private final String _prefix2;
 
     protected AzureBlobAppender(
-            String name,
-            Filter filter,
-            Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions,
-            final Property[] properties,
-            String sas,
-            String websiteName,
-            String websiteId) {
+        String name,
+        Filter filter,
+        Layout<? extends Serializable> layout,
+        final boolean ignoreExceptions,
+        final Property[] properties,
+        String sas,
+        String websiteName,
+        String websiteId) {
         super(name, filter, layout, ignoreExceptions, properties);
 
         _container = new BlobContainerClientBuilder()
-                .endpoint(sas)
-                .buildClient();
+            .endpoint(sas)
+            .buildClient();
         _prefix1 = websiteName;
         _prefix2 = websiteId;
     }
 
     protected AzureBlobAppender(
-            String name,
-            Filter filter,
-            Layout<? extends Serializable> layout,
-            final boolean ignoreExceptions,
-            final Property[] properties,
-            String accountName,
-            String accountKey,
-            String containerName,
-            String prefix1,
-            String prefix2) {
+        String name,
+        Filter filter,
+        Layout<? extends Serializable> layout,
+        final boolean ignoreExceptions,
+        final Property[] properties,
+        String containerUri,
+        String accountName,
+        String accountKey,
+        String containerName,
+        String prefix1,
+        String prefix2) {
 
         super(name, filter, layout, ignoreExceptions, properties);
 
-        StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+        if (isNullOrEmpty(containerUri)) {
+            StorageSharedKeyCredential storageSharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
 
-        _container = new BlobContainerClientBuilder()
+            _container = new BlobContainerClientBuilder()
                 .endpoint("https://" + accountName + ".blob.core.windows.net")
                 .credential(storageSharedKeyCredential)
                 .containerName(containerName)
                 .buildClient();
+        } else {
+            TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+            _container = new BlobContainerClientBuilder()
+                .endpoint(containerUri)
+                .credential(credential)
+                .buildClient();
+        }
+
         if (!_container.exists()) {
             _container.create();
         }
@@ -120,6 +136,7 @@ public class AzureBlobAppender extends AbstractAppender {
      *
      * @param name          The name of the Appender.
      * @param webapps       WebApps mode. If this value is true, assume it is running on WebApps.
+     * @param containerUri  Azure container URI. If container uri is set use DefaultAzureCredential. It becomes effective when WebApps is false. 
      * @param accountName   Azure storage account name. It becomes effective when WebApps is false.
      * @param accountKey    Azure storage account key. It becomes effective when WebApps is false.
      * @param containerName The name of blob container. It becomes effective when WebApps is false.
@@ -131,15 +148,16 @@ public class AzureBlobAppender extends AbstractAppender {
      */
     @PluginFactory
     public static AzureBlobAppender createAppender(
-            @PluginAttribute("name") String name,
-            @PluginAttribute("webapps") boolean webapps,
-            @PluginAttribute("accountName") final String accountName,
-            @PluginAttribute("accountKey") final String accountKey,
-            @PluginAttribute("containerName") final String containerName,
-            @PluginAttribute("prefix1") String prefix1,
-            @PluginAttribute("prefix2") String prefix2,
-            @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+        @PluginAttribute("name") String name,
+        @PluginAttribute("webapps") boolean webapps,
+        @PluginAttribute("containerUri") final String containerUri,
+        @PluginAttribute("accountName") final String accountName,
+        @PluginAttribute("accountKey") final String accountKey,
+        @PluginAttribute("containerName") final String containerName,
+        @PluginAttribute("prefix1") String prefix1,
+        @PluginAttribute("prefix2") String prefix2,
+        @PluginElement("Layout") Layout<? extends Serializable> layout,
+        @PluginElement("Filter") final Filter filter) {
 
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
@@ -153,12 +171,20 @@ public class AzureBlobAppender extends AbstractAppender {
             return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, sas, prefix1, prefix2);
 
         } else {
-            failIfNullOrEmpty(accountName, "accountName");
-            failIfNullOrEmpty(accountKey, "accountKey");
-            failIfNullOrEmpty(containerName, "containerName");
+
+            if (isNullOrEmpty(containerUri)) {
+                failIfNullOrEmpty(accountName, "accountName");
+                failIfNullOrEmpty(accountKey, "accountKey");
+                failIfNullOrEmpty(containerName, "containerName");
+            } else {
+                failIfNullOrEmpty(containerUri, "containerUri");
+            }
+
             failIfNullOrEmpty(prefix1, "prefix1");
 
-            return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, accountName, accountKey, containerName, prefix1, prefix2);
+            return new AzureBlobAppender(name, filter, layout, true, Property.EMPTY_ARRAY, containerUri, accountName,
+                accountKey,
+                containerName, prefix1, prefix2);
         }
     }
 

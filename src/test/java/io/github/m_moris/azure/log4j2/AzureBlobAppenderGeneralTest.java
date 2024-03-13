@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -33,6 +34,7 @@ public class AzureBlobAppenderGeneralTest {
                 System.setProperty("accountName", _azureConfig.accountName);
                 System.setProperty("accountKey", _azureConfig.accountKey);
                 System.setProperty("containerName", _azureConfig.containerName);
+                System.setProperty("containerUri", _azureConfig.containerUri);
             }
         }
     }
@@ -47,5 +49,20 @@ public class AzureBlobAppenderGeneralTest {
             logger.error("error message", new IOException("test"));
             assertTrue(true);
         }
+        System.out.println("done");
+    }
+
+    @Disabled
+    @Test
+        public void testWithDefaultAzureCredential() {
+        try (LoggerContext context = Configurator.initialize("test", "config-gen2.xml")) {
+            Logger logger = context.getLogger(AzureBlobAppenderGeneralTest.class.getName());
+            logger.debug("debug message");
+            logger.info("info message");
+            logger.warn("warn message");
+            logger.error("error message", new IOException("test"));
+            assertTrue(true);
+        }
+        System.out.println("done");
     }
 }
