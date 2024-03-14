@@ -32,3 +32,4 @@ local.properties
 .recommenders
 .classpath
 .factorypath
+.project
