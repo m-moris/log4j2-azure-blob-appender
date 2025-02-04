@@ -7,6 +7,10 @@ This is a custom appender for log4j2 that outputs logs to Azure Storage Blob. Th
 
 ## What's New
 
+**2025/02**
+
+Update dependent libraries
+
 **Important 2024/03**
 
 Managed ID is now supported. It uses `DefaultAzureCredential` internally.

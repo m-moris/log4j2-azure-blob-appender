@@ -7,6 +7,10 @@ Azure Storage Blob にログを出力する log4j2用のカスタムアペンダ
 
 ## What's New
 
+** 2025/02 **
+
+依存ライブラリのバージョンを更新しました
+
 **重要 2024/03**
 
 マネージドIDに対応しました。内部的に `DefaultAzureCredential` を利用しています。
