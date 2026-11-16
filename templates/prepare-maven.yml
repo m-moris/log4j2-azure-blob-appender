@@ -6,9 +6,9 @@ steps:
     secureFile: 'settings-security.xml'
 - task: DownloadSecureFile@1
   name: settingsXml
-  displayName: 'Download maven settings file'
+  displayName: 'Download Central publishing settings file'
   inputs:
-    secureFile: 'settings.xml'
+    secureFile: 'settings-central.xml'
 - task: DownloadSecureFile@1
   name: key
   displayName: 'Download private key file'
@@ -20,9 +20,10 @@ steps:
   inputs:
     secureFile: 'azureconfig.json'
 - script: |
-    gpg --no-tty --batch --import $(key.secureFilePath)
-    mkdir -p ~/.m2
-    cp -v $(settingsSecurityXml.secureFilePath) ~/.m2/
-    cp -v $(settingsXml.secureFilePath) ~/.m2/
-    cp -v $(azureconfig.secureFilePAth) $(Build.SourcesDirectory)/src/test/resources/
- 
+    set -eu
+    umask 077
+    gpg --no-tty --batch --import "$(key.secureFilePath)"
+    mkdir -p "$HOME/.m2"
+    cp "$(settingsSecurityXml.secureFilePath)" "$HOME/.m2/settings-security.xml"
+    cp "$(settingsXml.secureFilePath)" "$HOME/.m2/settings.xml"
+    cp "$(azureconfig.secureFilePath)" "$(Build.SourcesDirectory)/src/test/resources/azureconfig.json"
