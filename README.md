@@ -132,6 +132,38 @@ In general mode.
 
 ## Test
 
-Set your account and key to `test/resources/azureconfig.json` 
+### Azurite integration tests
+
+With Docker Compose, Maven, and JDK 11 or later installed, run:
+
+```bash
+bash scripts/test-azurite.sh
+```
+
+The script starts Azurite using `compose.yaml` with `--skipApiVersionCheck`,
+waits for it to become healthy, and runs the unit and integration tests with
+`mvn -Pazurite verify`. It uses an available loopback port and a separate Compose
+project per run. The container is removed on success or failure; test data is
+kept only in memory. No Azure account or `azureconfig.json` is required.
+
+The integration tests verify stored messages, existing blob preservation,
+recovery after deletion, concurrent writes, and container SAS authentication.
+The `azurite` Maven profile excludes the existing tests that connect to Azure.
+
+To manage the emulator manually instead:
+
+```bash
+docker compose up -d --wait
+mvn -Pazurite verify
+docker compose down
+```
+
+Manual startup uses port 10000 by default. To change it, set `AZURITE_BLOB_PORT`
+for Compose and pass the same port as `-Dazurite.port` to Maven.
+
+### Azure integration tests
+
+Set your account and key in `src/test/resources/azureconfig.json` for the existing
+Azure tests. Running `mvn test` without the `azurite` profile still runs those tests.
 
 [To Japanese](./README.ja.md)

@@ -28,7 +28,7 @@
     </scm>
     <url>https://github.com/m-moris/log4j2-azure-blob-appender</url>
     <properties>
-        <revision>2.4.0</revision>
+        <revision>2.4.1</revision>
         <changelist>-SNAPSHOT</changelist>
         <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -220,6 +220,41 @@
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>azurite</id>
+            <properties>
+                <azurite.port>10000</azurite.port>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/AzureBlobAppenderGeneralTest.java</exclude>
+                                <exclude>**/AzureBlobAppenderWebAppsTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <azurite.port>${azurite.port}</azurite.port>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>release-sign-artifacts</id>
             <activation>

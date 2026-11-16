@@ -1,0 +1,24 @@
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.35.0
+    command:
+      - azurite-blob
+      - --blobHost
+      - 0.0.0.0
+      - --skipApiVersionCheck
+      - --inMemoryPersistence
+      - --extentMemoryLimit
+      - "64"
+      - --silent
+    ports:
+      - "127.0.0.1:${AZURITE_BLOB_PORT:-10000}:10000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:10000/devstoreaccount1?comp=list', r => { r.resume(); process.exit(r.statusCode === 403 ? 0 : 1); }).on('error', () => process.exit(1));"
+      interval: 1s
+      timeout: 5s
+      retries: 30
+      start_period: 2s

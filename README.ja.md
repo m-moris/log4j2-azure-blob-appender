@@ -141,6 +141,38 @@ WebAppsモード
 
 ## テスト
 
-`test/resources/azureconfig.json` に値を設定すること。
+### Azurite を使った統合テスト
+
+Docker Compose、Maven、JDK 11 以降を用意し、以下を実行します。
+
+```bash
+bash scripts/test-azurite.sh
+```
+
+`compose.yaml` を使って Azurite を `--skipApiVersionCheck` 付きで起動し、
+正常起動を待ってから `mvn -Pazurite verify` で単体テストと統合テストを実行します。
+実行ごとに別の Compose プロジェクトと空いているループバックポートを使用します。
+成功・失敗にかかわらずコンテナを削除し、テストデータはメモリ内だけに保持します。
+Azure アカウントや `azureconfig.json` は不要です。
+
+統合テストでは保存内容、既存 Blob の保持、削除後の復旧、並行書き込み、
+コンテナ SAS 認証を検証します。`azurite` Maven プロファイルでは、
+実 Azure に接続する既存テストを除外します。
+
+エミュレータを手動で管理する場合は、以下を実行します。
+
+```bash
+docker compose up -d --wait
+mvn -Pazurite verify
+docker compose down
+```
+
+手動起動時の既定ポートは 10000 です。変更する場合は Compose の
+`AZURITE_BLOB_PORT` と Maven の `-Dazurite.port` に同じポートを指定してください。
+
+### 実 Azure を使った統合テスト
+
+既存テストには `src/test/resources/azureconfig.json` の接続情報を設定します。
+`azurite` プロファイルなしの `mvn test` では、従来どおりこれらのテストが実行されます。
 
 以上
