@@ -1,10 +1,9 @@
 package io.github.m_moris.azure.log4j2;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.util.Date;
 
 import org.apache.logging.log4j.core.Appender;
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -25,6 +23,8 @@ import com.azure.core.credential.TokenCredential;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
+import com.azure.storage.blob.models.BlobErrorCode;
+import com.azure.storage.blob.models.BlobStorageException;
 import com.azure.storage.blob.specialized.AppendBlobClient;
 import com.azure.storage.common.StorageSharedKeyCredential;
 
@@ -38,9 +38,11 @@ public class AzureBlobAppender extends AbstractAppender {
     private static final String WEBSITE_NAME = "WEBSITE_SITE_NAME";
     private static final String WEBSITE_ID = "WEBSITE_INSTANCE_ID";
 
-    private BlobContainerClient _container;
+    private final BlobContainerClient _container;
     private final String _prefix1;
     private final String _prefix2;
+    private final Clock _clock;
+    private AppendBlobClient _appendBlob;
 
     protected AzureBlobAppender(
         String name,
@@ -51,13 +53,26 @@ public class AzureBlobAppender extends AbstractAppender {
         String sas,
         String websiteName,
         String websiteId) {
-        super(name, filter, layout, ignoreExceptions, properties);
+        this(name, filter, layout, ignoreExceptions, properties,
+            new BlobContainerClientBuilder().endpoint(sas).buildClient(),
+            websiteName, websiteId, Clock.systemUTC());
+    }
 
-        _container = new BlobContainerClientBuilder()
-            .endpoint(sas)
-            .buildClient();
-        _prefix1 = websiteName;
-        _prefix2 = websiteId;
+    AzureBlobAppender(
+        String name,
+        Filter filter,
+        Layout<? extends Serializable> layout,
+        boolean ignoreExceptions,
+        Property[] properties,
+        BlobContainerClient container,
+        String prefix1,
+        String prefix2,
+        Clock clock) {
+        super(name, filter, layout, ignoreExceptions, properties);
+        _container = container;
+        _prefix1 = prefix1;
+        _prefix2 = prefix2;
+        _clock = clock;
     }
 
     protected AzureBlobAppender(
@@ -97,33 +112,39 @@ public class AzureBlobAppender extends AbstractAppender {
 
         _prefix1 = prefix1;
         _prefix2 = prefix2;
+        _clock = Clock.systemUTC();
     }
 
     @Override
     public void append(LogEvent event) {
 
-        String name = getBlobName();
+        AppendBlobClient append = getAppendBlobClient();
+        byte[] bytes = getLayout().toByteArray(event);
 
         try {
-
-            AppendBlobClient append = _container.getBlobClient(name).getAppendBlobClient();
-            if (!append.exists()) {
-                append.create();
+            append.appendBlock(new ByteArrayInputStream(bytes), bytes.length);
+        } catch (BlobStorageException e) {
+            if (!BlobErrorCode.BLOB_NOT_FOUND.equals(e.getErrorCode())) {
+                throw e;
             }
-            byte[] bytes = getLayout().toByteArray(event);
-
-            try (InputStream in = new ByteArrayInputStream(bytes)) {
-                append.appendBlock(in, bytes.length);
-            }
-        } catch (IOException e) {
-            if (!ignoreExceptions()) {
-                throw new AppenderLoggingException(e);
-            }
+            // Retry only when the failed request definitely did not append any data.
+            append.createIfNotExists();
+            append.appendBlock(new ByteArrayInputStream(bytes), bytes.length);
         }
     }
 
+    private synchronized AppendBlobClient getAppendBlobClient() {
+        String name = getBlobName();
+        if (_appendBlob == null || !name.equals(_appendBlob.getBlobName())) {
+            AppendBlobClient append = _container.getBlobClient(name).getAppendBlobClient();
+            append.createIfNotExists();
+            _appendBlob = append;
+        }
+        return _appendBlob;
+    }
+
     private String getBlobName() {
-        String dfmt = (new SimpleDateFormat("yyyy/MM/dd/HH")).format(new Date());
+        String dfmt = (new SimpleDateFormat("yyyy/MM/dd/HH")).format(new Date(_clock.millis()));
         if (isNullOrEmpty(_prefix2)) {
             return String.format("%s/%s_applicationLog.txt", dfmt, _prefix1);
         } else {
